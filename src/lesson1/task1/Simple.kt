@@ -74,7 +74,8 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 60 * 60 + min
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =(sagenes * 48 + arshins * 16 + vershoks) * 4.445 / 100
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
+    (sagenes * 48 + arshins * 16 + vershoks) * 4.445 / 100
 
 
 /**
@@ -83,7 +84,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =(sagenes 
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(deg: Int, min: Int, sec: Int): Double = deg * PI / 180 + min * PI / 180 /60 + sec * PI / 180 / 60 /60
+fun angleInRadian(deg: Int, min: Int, sec: Int): Double = (deg * PI + min * PI / 60 + sec * PI / 60 / 60) / 180
 
 /**
  * Тривиальная (1 балл)
@@ -92,8 +93,8 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double = deg * PI / 180 + min *
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
-    val x = abs(x1-x2)
-    val y = abs(y1-y2)
+    val x = x1 - x2
+    val y = y1 - y2
     return sqrt(sqr(x) + sqr(y))
 }
 
@@ -135,7 +136,7 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = initial * (1 + per
  */
 fun numberRevert(number: Int): Int {
     val third = number % 10
-    val second = number /10 % 10
-    val first = number /100 %10
-    return (third*100 + second*10 + first)
+    val second = number / 10 % 10
+    val first = number / 100 % 10
+    return (third * 100 + second * 10 + first)
 }
