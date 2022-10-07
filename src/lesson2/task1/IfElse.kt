@@ -71,11 +71,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    if (age % 100 in 10..20) return "$age лет"
-    if (age % 10 == 1) return "$age год"
-    if (age % 10 in 2..4) return "$age года"
-    return "$age лет"
+fun ageDescription(age: Int): String = when {
+    age % 100 in 10..20 -> "$age лет"
+    age % 10 == 1 -> "$age год"
+    age % 10 in 2..4 -> "$age года"
+    else -> "$age лет"
 }
 
 /**
@@ -113,11 +113,11 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    return if (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2))) 3
-    else if ((kingX == rookX1) || (kingY == rookY1)) 1
-    else if ((kingX == rookX2) || (kingY == rookY2)) 2
-    else 0
+): Int = when {
+    ((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2)) -> 3
+    (kingX == rookX1) || (kingY == rookY1) -> 1
+    (kingX == rookX2) || (kingY == rookY2) -> 2
+    else -> 0
 }
 
 /**
@@ -150,20 +150,15 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val solution = if (a > b && a > c) {
-        val otherSides = b + c
-        val sqSides = sqr(b) + sqr(c)
-        if (a > otherSides) -1 else if (sqr(a) < sqSides) 0 else if (sqr(a) == sqr(b) + sqr(c)) 1 else 2
-    } else if (b > a && b > c) {
-        val otherSides = a + c
-        val sqSides = sqr(a) + sqr(c)
-        if (b > otherSides) -1 else if (sqr(b) < sqSides) 0 else if (sqr(b) == sqr(a) + sqr(c)) 1 else 2
-    } else {
-        val otherSides = a + b
-        val sqSides = sqr(a) + sqr(b)
-        if (c > otherSides) -1 else if (sqr(c) < sqSides) 0 else if (sqr(c) == sqr(b) + sqr(a)) 1 else 2
+    val biggest = maxOf(a, b, c)
+    val smallest = minOf(a, b, c)
+    val between = a + b + c - biggest - smallest
+    return when {
+        biggest > between + smallest -> -1
+        sqr(biggest) < sqr(between) + sqr(smallest) -> 0
+        sqr(biggest) == sqr(between) + sqr(smallest) -> 1
+        else -> 2
     }
-    return solution
 }
 
 /**

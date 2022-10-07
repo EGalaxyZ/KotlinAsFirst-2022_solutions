@@ -24,7 +24,7 @@ fun isNumberHappy(number: Int): Boolean {
     val second = number / 100 % 10
     val third = number / 10 % 10
     val fourth = number % 10
-    return ((first + second) == (third + fourth))
+    return first + second == third + fourth
 }
 
 /**
@@ -47,7 +47,7 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
 fun daysInMonth(month: Int, year: Int): Int = when (month) {
     1, 3, 5, 7, 8, 10, 12 -> 31
     4, 6, 9, 11 -> 30
-    else -> if ((year % 4 == 0) && (year % 100 != 0) || (year % 100 == 0) && (year % 400 == 0)) 29 else 28
+    else -> if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)) 29 else 28
 }
 
 /**
@@ -71,8 +71,7 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    return if ((a <= r) && (b <= s) || (a <= s) && (b <= r)) true
-    else if ((a <= r) && (c <= s) || (a <= s) && (c <= r)) true
-    else ((c <= r) && (b <= s) || (c <= s) && (b <= r))
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = when {
+    minOf(a, b, c) * (a + b + c - minOf(a, b, c) - maxOf(a, b, c)) <= r * s -> true
+    else -> false
 }
