@@ -2,10 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -77,7 +74,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count = 0
-    var number = n
+    var number = abs(n)
     if (n == 0) return 1
     while (number > 0) {
         count += 1
@@ -284,6 +281,7 @@ fun hasDifferentDigits(n: Int): Boolean {
     var number = n
     var last = n % 10
     var previous = n / 10 % 10
+    if (number / 10 == 0) return false
     while (number > 0) {
         if (last != previous) return true
         else {
