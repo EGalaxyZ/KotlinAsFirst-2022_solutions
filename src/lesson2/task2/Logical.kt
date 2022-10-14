@@ -35,7 +35,7 @@ fun isNumberHappy(number: Int): Boolean {
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-    ((x1 == x2) || (y1 == y2) || (abs(x1 - x2) == abs(y1 - y2)))
+    x1 == x2 || y1 == y2 || abs(x1 - x2) == abs(y1 - y2)
 
 
 /**
@@ -60,7 +60,7 @@ fun daysInMonth(month: Int, year: Int): Int = when (month) {
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = (sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1 <= r2)
+): Boolean = sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1 <= r2
 
 /**
  * Средняя (3 балла)
@@ -71,7 +71,5 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = when {
-    (a + b + c - minOf(a, b, c) - maxOf(a, b, c)) <= max(r, s) && minOf(a, b, c) <= min(r, s) -> true
-    else -> false
-}
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
+    ((a + b + c - minOf(a, b, c) - maxOf(a, b, c)) <= max(r, s) && minOf(a, b, c) <= min(r, s))

@@ -108,12 +108,11 @@ fun fib(n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var min = 0
-    if (n == 2) return 2
-    for (i in 2..n) {
+    for (i in 2..sqrt(n.toDouble()).toInt() + 1) {
         if (n % i == 0) {
             min = i
             break
-        }
+        } else min = n
     }
     return min
 }
@@ -123,16 +122,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var max = 0
-    for (i in n - 1 downTo 1) {
-        if (n % i == 0) {
-            max = i
-            break
-        }
-    }
-    return max
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая (2 балла)
@@ -169,42 +159,15 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    if (max(m, n) % min(m, n) == 0) return max(m, n)
-    var counter = 0
-    for (i in 2..min(m, n)) {
-        if ((m % i == 0) && (n % i == 0)) {
-            counter++
-            break
-        }
-    }
-    if (counter == 0) return m * n
-    var answer = 1
-    var divide = 2
     var maximal = max(m, n)
     var minimal = min(m, n)
-    while ((maximal > 1) or (minimal > 1)) when {
-        ((maximal % divide == 0) && (minimal % divide == 0)) -> {
-            answer *= divide
-            maximal /= divide
-            minimal /= divide
-            divide = 2
-        }
-
-        ((minimal % divide == 0) && (maximal % divide != 0)) -> {
-            answer *= divide
-            minimal /= divide
-            divide = 2
-        }
-
-        ((minimal % divide != 0) && (maximal % divide == 0)) -> {
-            answer *= divide
-            maximal /= divide
-            divide = 2
-        }
-
-        else -> divide++
+    var extra: Int
+    while (maximal % minimal != 0) {
+        extra = maximal % minimal
+        maximal = minimal
+        minimal = extra
     }
-    return answer
+    return m * n / minimal
 }
 
 /**
@@ -231,12 +194,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun revert(n: Int): Int {
     var number = n
-    var count = 0
-    var answer = n
-    while (answer > 0) {
-        answer /= 10
-        count++
-    }
+    val count = digitNumber(n)
+    var answer = 0
     for (i in 1..count) {
         answer = answer * 10 + number % 10
         number /= 10
@@ -254,12 +213,7 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var count = 0
-    var number = n
-    while (number > 0) {
-        number /= 10
-        count++
-    }
+    val count = digitNumber(n)
     if (count == 1) return true
     var counter = 1
     for (i in count downTo count / 2) {
@@ -329,22 +283,12 @@ fun squareSequenceDigit(n: Int): Int {
     var k = 1
     var number = 0
     while (count < n) {
-        var numberK = k * k
-        while (numberK > 0) {
-            numberK /= 10
-            count++
-        }
+        val numberK = k * k
+        count += digitNumber(numberK)
         number = k * k
         k++
     }
-    return if (count == n) number % 10
-    else {
-        while (count > n) {
-            number /= 10
-            count -= 1
-        }
-        number % 10
-    }
+    return scissors(count, n, number)
 }
 
 /**
@@ -357,27 +301,26 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var count = 1
-    var number: Int
-    var numberFib = 1
-    var previous = 0
-    var extra: Int
+    var count = 0
+    var k = 1
+    var numberFib = fib(k)
     while (count < n) {
-        extra = previous
-        previous = numberFib
-        numberFib += extra
-        number = numberFib
-        while (number > 0) {
-            number /= 10
-            count++
-        }
+        numberFib = fib(k)
+        count += digitNumber(numberFib)
+        k++
     }
-    return if (count == n) numberFib % 10
+    return scissors(count, n, numberFib)
+}
+
+private fun scissors(a: Int, n: Int, b: Int): Int {
+    var count = a
+    var number = b
+    return if (count == n) number % 10
     else {
         while (count > n) {
-            numberFib /= 10
+            number /= 10
             count -= 1
         }
-        numberFib % 10
+        number % 10
     }
 }
