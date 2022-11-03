@@ -262,7 +262,7 @@ fun convertToString(n: Int, base: Int): String {
     var number = n
     var mainSentence = ""
     if (n == 0) return "0"
-    while (number >= 0) {
+    while (number > 0) {
         val lastN = if (number % base < 10) "${number % base}" else when (number % base) {
             10 -> "a"
             11 -> "b"
