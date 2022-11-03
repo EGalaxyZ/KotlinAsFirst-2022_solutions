@@ -207,15 +207,12 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     var number = n
     val list = mutableListOf<Int>()
-    var d = 2
     if (isPrime(n)) return listOf(n)
-    while (number > 1) {
-        if (number % d == 0) {
-            number /= d
-            list += d
-            d = 2
+    for (i in 2..sqrt(n.toDouble()).toInt() + 1) {
+        while (number % i == 0) {
+            list += i
+            number /= i
         }
-        d += 1
     }
     return list
 }
