@@ -214,7 +214,7 @@ fun factorize(n: Int): List<Int> {
             number /= i
         }
     }
-    if (number != 0) list.add(number)
+    if (number > 1) list.add(number)
     return list
 }
 
