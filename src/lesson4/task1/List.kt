@@ -5,6 +5,7 @@ package lesson4.task1
 import lesson1.task1.discriminant
 import kotlin.math.*
 import lesson3.task1.digitNumber
+import lesson3.task1.isPrime
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -207,6 +208,7 @@ fun factorize(n: Int): List<Int> {
     var number = n
     val list = mutableListOf<Int>()
     var d = 2
+    if (isPrime(n)) return listOf(n)
     while (number > 1) {
         if (number % d == 0) {
             number /= d
@@ -237,6 +239,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     var number = n
     val list = mutableListOf<Int>()
+    if (n == 0) return listOf(0)
     while (number > 0) {
         list.add(0, number % base)
         number /= base
@@ -258,7 +261,8 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     var number = n
     var mainSentence = ""
-    while (number > 0) {
+    if (n == 0) return "0"
+    while (number >= 0) {
         val lastN = if (number % base < 10) "${number % base}" else when (number % base) {
             10 -> "a"
             11 -> "b"
