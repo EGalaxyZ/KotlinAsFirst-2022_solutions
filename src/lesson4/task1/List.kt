@@ -436,4 +436,94 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var number = n
+    var counter = 1
+    var answer = ""
+    while (number > 0) {
+        if (((counter == 1) || (counter == 4)) && ((number % 100 in 10..19) || (number % 100 == 0))) {
+            val word = when (number % 100) {
+                0 -> ""
+                10 -> "десять "
+                11 -> "одиннадцать "
+                12 -> "двенадцать "
+                13 -> "тринадцать "
+                14 -> "четырнадцать "
+                15 -> "пятнадцать "
+                16 -> "шестнадцать "
+                17 -> "семнадцать "
+                18 -> "восемнадцать "
+                else -> "девятнадцать "
+            }
+            answer = if (counter == 4) word + "тысяч " + answer else word + answer
+            number /= 100
+            counter += 2
+        } else if (counter == 1) {
+            val word = when (number % 10) {
+                0 -> ""
+                1 -> "один"
+                2 -> "два"
+                3 -> "три"
+                4 -> "четыре"
+                5 -> "пять"
+                6 -> "шесть"
+                7 -> "семь"
+                8 -> "восемь"
+                else -> "девять"
+            }
+            answer = word + answer
+            number /= 10
+            counter += 1
+        } else if (counter == 4) {
+            val word = when (number % 10) {
+                0 -> ""
+                1 -> "одна тысяча "
+                2 -> "две тысячи "
+                3 -> "три тысячи "
+                4 -> "четыре тысячи "
+                5 -> "пять тысяч "
+                6 -> "шесть тысяч "
+                7 -> "семь тысяч "
+                8 -> "восемь тысяч "
+                else -> "девять тысяч "
+            }
+            answer = word + answer
+            number /= 10
+            counter += 1
+        }
+        if ((counter == 2) || (counter == 5)) {
+            val word = when (number % 10) {
+                0 -> ""
+                2 -> "двадцать "
+                3 -> "тридцать "
+                4 -> "сорок "
+                5 -> "пятьдесят "
+                6 -> "шестьдесят "
+                7 -> "семьдесят "
+                8 -> "восемьдесят "
+                else -> "девяносто "
+            }
+            answer = word + answer
+            number /= 10
+            counter += 1
+        }
+        if ((counter == 3) || (counter == 6)) {
+            val word = when (number % 10) {
+                0 -> ""
+                1 -> "сто "
+                2 -> "двести "
+                3 -> "триста "
+                4 -> "четыреста "
+                5 -> "пятьсот "
+                6 -> "шестьсот "
+                7 -> "семьсот "
+                8 -> "восемьсот "
+                else -> "девятьсот "
+            }
+            answer = word + answer
+            number /= 10
+            counter += 1
+        }
+    }
+    return answer.trim()
+}
