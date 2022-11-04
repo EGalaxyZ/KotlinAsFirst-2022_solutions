@@ -476,7 +476,7 @@ fun russian(n: Int): String {
             counter += 1
         } else if (counter == 4) {
             val word = when (number % 10) {
-                0 -> ""
+                0 -> "тысяч "
                 1 -> "одна тысяча "
                 2 -> "две тысячи "
                 3 -> "три тысячи "
