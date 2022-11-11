@@ -4,7 +4,6 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import kotlin.math.*
-import lesson3.task1.digitNumber
 import lesson3.task1.isPrime
 
 // Урок 4: списки
@@ -305,53 +304,80 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String {
+fun roman(n: Int): String = buildString {
     var number = n
-    var answer = ""
-    var counter = 1
     while (number >= 1000) {
-        answer += "M"
+        append("M")
         number -= 1000
     }
-    for (i in 1 until digitNumber(number)) counter *= 10
-    while (number > 0) {
-        val extra = when (number / counter * counter) {
-            0 -> ""
-            1 -> "I"
-            2 -> "II"
-            3 -> "III"
-            4 -> "IV"
-            5 -> "V"
-            6 -> "VI"
-            7 -> "VII"
-            8 -> "VIII"
-            9 -> "IX"
-            10 -> "X"
-            20 -> "XX"
-            30 -> "XXX"
-            40 -> "XL"
-            50 -> "L"
-            60 -> "LX"
-            70 -> "LXX"
-            80 -> "LXXX"
-            90 -> "XC"
-            100 -> "C"
-            200 -> "CC"
-            300 -> "CCC"
-            400 -> "CD"
-            500 -> "D"
-            600 -> "DC"
-            700 -> "DCC"
-            800 -> "DCCC"
-            else -> "CM"
+    when {
+        number / 100 == 9 -> {
+            append("CM")
+            number -= 900
         }
-        answer += extra
-        number %= counter
-        counter /= 10
-    }
-    return answer
-}
 
+        number / 100 >= 5 -> {
+            append("D")
+            number -= 500
+        }
+
+        number / 100 == 4 -> {
+            append("CD")
+            number -= 400
+        }
+    }
+    while (number > 99) {
+        number -= 100
+        append("C")
+    }
+    when {
+        number / 10 == 9 -> {
+            number -= 90
+            append("XC")
+        }
+
+        number / 10 >= 5 -> {
+            number -= 50
+            append("L")
+        }
+
+        number / 10 == 4 -> {
+            number -= 40
+            append("XL")
+        }
+    }
+    while (number > 9) {
+        number -= 10
+        append("X")
+    }
+    when {
+        number == 9 -> {
+            append("IX")
+            number = 0
+        }
+
+        number >= 5 -> {
+            append("V")
+            number -= 5
+        }
+
+        number == 4 -> {
+            append("IV")
+            number = 0
+        }
+    }
+    while (number > 0) {
+        number -= 1
+        append("I")
+    }
+}
+/**
+ * Очень сложная (7 баллов)
+ *
+ * Записать заданное натуральное число 1..999999 прописью по-русски.
+ * Например, 375 = "триста семьдесят пять",
+ * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
+ */
 /**
  * Очень сложная (7 баллов)
  *
