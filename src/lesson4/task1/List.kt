@@ -156,7 +156,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    val list = mutableListOf(0)
+    val list = mutableListOf<Int>()
     for (i in a.indices) list.add(a[i] * b[i])
     return list.sum()
 }
@@ -170,7 +170,7 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    val s = mutableListOf(0)
+    val s = mutableListOf<Int>()
     var m = 1
     for (i in p.indices) {
         s.add(p[i] * m)
@@ -190,9 +190,8 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    val s = list.toList()
-    for (i in list.indices) {
-        list[i] += s.subList(0, i).sum()
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
     return list
 }
@@ -208,7 +207,7 @@ fun factorize(n: Int): List<Int> {
     var number = n
     val list = mutableListOf<Int>()
     if (isPrime(n)) return listOf(n)
-    for (i in 2..sqrt(n.toDouble()).toInt() + 1) {
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
         while (number % i == 0) {
             list += i
             number /= i
@@ -239,10 +238,10 @@ fun convert(n: Int, base: Int): List<Int> {
     val list = mutableListOf<Int>()
     if (n == 0) return listOf(0)
     while (number > 0) {
-        list.add(0, number % base)
+        list.add(number % base)
         number /= base
     }
-    return list
+    return list.reversed()
 }
 
 /**
@@ -257,42 +256,8 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    var number = n
-    var mainSentence = ""
-    if (n == 0) return "0"
-    while (number > 0) {
-        val lastN = if (number % base < 10) "${number % base}" else when (number % base) {
-            10 -> "a"
-            11 -> "b"
-            12 -> "c"
-            13 -> "d"
-            14 -> "e"
-            15 -> "f"
-            16 -> "g"
-            17 -> "h"
-            18 -> "i"
-            19 -> "j"
-            20 -> "k"
-            21 -> "l"
-            22 -> "m"
-            23 -> "n"
-            24 -> "o"
-            25 -> "p"
-            26 -> "q"
-            27 -> "r"
-            28 -> "s"
-            29 -> "t"
-            30 -> "u"
-            31 -> "v"
-            32 -> "w"
-            33 -> "x"
-            34 -> "y"
-            else -> "z"
-        }
-        mainSentence = lastN + mainSentence
-        number /= base
-    }
-    return mainSentence
+    val number = convert(n, base)
+    return number.joinToString(separator = "") { if (it > 9) "${Char(it + 87)}" else "$it" }
 }
 
 /**
@@ -327,51 +292,9 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var u = 1
-    var answer = 0
-    for (i in str.length - 1 downTo 0) {
-        val n = when (str[i]) {
-            '0' -> 0
-            '1' -> 1
-            '2' -> 2
-            '3' -> 3
-            '4' -> 4
-            '5' -> 5
-            '6' -> 6
-            '7' -> 7
-            '8' -> 8
-            '9' -> 9
-            'a' -> 10
-            'b' -> 11
-            'c' -> 12
-            'd' -> 13
-            'e' -> 14
-            'f' -> 15
-            'g' -> 16
-            'h' -> 17
-            'i' -> 18
-            'j' -> 19
-            'k' -> 20
-            'l' -> 21
-            'm' -> 22
-            'n' -> 23
-            'o' -> 24
-            'p' -> 25
-            'q' -> 26
-            'r' -> 27
-            's' -> 28
-            't' -> 29
-            'u' -> 30
-            'v' -> 31
-            'w' -> 32
-            'x' -> 33
-            'y' -> 34
-            else -> 35
-        }
-        answer += n * u
-        u *= base
-    }
-    return answer
+    val list = mutableListOf<Int>()
+    for (i in str.indices) if (str[i] >= 'a') list.add(str[i].code - 87) else list.add(str[i].code - 48)
+    return decimal(list, base)
 }
 
 /**
@@ -439,90 +362,91 @@ fun roman(n: Int): String {
 fun russian(n: Int): String {
     var number = n
     var counter = 1
-    var answer = ""
-    while (number > 0) {
-        if (((counter == 1) || (counter == 4)) && ((number % 100 in 10..19) || (number % 100 == 0))) {
-            val word = when (number % 100) {
-                0 -> ""
-                10 -> "десять "
-                11 -> "одиннадцать "
-                12 -> "двенадцать "
-                13 -> "тринадцать "
-                14 -> "четырнадцать "
-                15 -> "пятнадцать "
-                16 -> "шестнадцать "
-                17 -> "семнадцать "
-                18 -> "восемнадцать "
-                else -> "девятнадцать "
+    val answer = buildString {
+        while (number > 0) {
+            if (((counter == 1) || (counter == 4)) && ((number % 100 in 10..19) || (number % 100 == 0))) {
+                val word = when (number % 100) {
+                    0 -> ""
+                    10 -> "десять "
+                    11 -> "одиннадцать "
+                    12 -> "двенадцать "
+                    13 -> "тринадцать "
+                    14 -> "четырнадцать "
+                    15 -> "пятнадцать "
+                    16 -> "шестнадцать "
+                    17 -> "семнадцать "
+                    18 -> "восемнадцать "
+                    else -> "девятнадцать "
+                }
+                insert(0, if (counter == 4) word + "тысяч " else word)
+                number /= 100
+                counter += 2
+            } else if (counter == 1) {
+                val word = when (number % 10) {
+                    0 -> ""
+                    1 -> "один"
+                    2 -> "два"
+                    3 -> "три"
+                    4 -> "четыре"
+                    5 -> "пять"
+                    6 -> "шесть"
+                    7 -> "семь"
+                    8 -> "восемь"
+                    else -> "девять"
+                }
+                insert(0, word)
+                number /= 10
+                counter += 1
+            } else if (counter == 4) {
+                val word = when (number % 10) {
+                    0 -> "тысяч "
+                    1 -> "одна тысяча "
+                    2 -> "две тысячи "
+                    3 -> "три тысячи "
+                    4 -> "четыре тысячи "
+                    5 -> "пять тысяч "
+                    6 -> "шесть тысяч "
+                    7 -> "семь тысяч "
+                    8 -> "восемь тысяч "
+                    else -> "девять тысяч "
+                }
+                insert(0, word)
+                number /= 10
+                counter += 1
             }
-            answer = if (counter == 4) word + "тысяч " + answer else word + answer
-            number /= 100
-            counter += 2
-        } else if (counter == 1) {
-            val word = when (number % 10) {
-                0 -> ""
-                1 -> "один"
-                2 -> "два"
-                3 -> "три"
-                4 -> "четыре"
-                5 -> "пять"
-                6 -> "шесть"
-                7 -> "семь"
-                8 -> "восемь"
-                else -> "девять"
+            if ((counter == 2) || (counter == 5)) {
+                val word = when (number % 10) {
+                    0 -> ""
+                    2 -> "двадцать "
+                    3 -> "тридцать "
+                    4 -> "сорок "
+                    5 -> "пятьдесят "
+                    6 -> "шестьдесят "
+                    7 -> "семьдесят "
+                    8 -> "восемьдесят "
+                    else -> "девяносто "
+                }
+                insert(0, word)
+                number /= 10
+                counter += 1
             }
-            answer = word + answer
-            number /= 10
-            counter += 1
-        } else if (counter == 4) {
-            val word = when (number % 10) {
-                0 -> "тысяч "
-                1 -> "одна тысяча "
-                2 -> "две тысячи "
-                3 -> "три тысячи "
-                4 -> "четыре тысячи "
-                5 -> "пять тысяч "
-                6 -> "шесть тысяч "
-                7 -> "семь тысяч "
-                8 -> "восемь тысяч "
-                else -> "девять тысяч "
+            if ((counter == 3) || (counter == 6)) {
+                val word = when (number % 10) {
+                    0 -> ""
+                    1 -> "сто "
+                    2 -> "двести "
+                    3 -> "триста "
+                    4 -> "четыреста "
+                    5 -> "пятьсот "
+                    6 -> "шестьсот "
+                    7 -> "семьсот "
+                    8 -> "восемьсот "
+                    else -> "девятьсот "
+                }
+                insert(0, word)
+                number /= 10
+                counter += 1
             }
-            answer = word + answer
-            number /= 10
-            counter += 1
-        }
-        if ((counter == 2) || (counter == 5)) {
-            val word = when (number % 10) {
-                0 -> ""
-                2 -> "двадцать "
-                3 -> "тридцать "
-                4 -> "сорок "
-                5 -> "пятьдесят "
-                6 -> "шестьдесят "
-                7 -> "семьдесят "
-                8 -> "восемьдесят "
-                else -> "девяносто "
-            }
-            answer = word + answer
-            number /= 10
-            counter += 1
-        }
-        if ((counter == 3) || (counter == 6)) {
-            val word = when (number % 10) {
-                0 -> ""
-                1 -> "сто "
-                2 -> "двести "
-                3 -> "триста "
-                4 -> "четыреста "
-                5 -> "пятьсот "
-                6 -> "шестьсот "
-                7 -> "семьсот "
-                8 -> "восемьсот "
-                else -> "девятьсот "
-            }
-            answer = word + answer
-            number /= 10
-            counter += 1
         }
     }
     return answer.trim()
