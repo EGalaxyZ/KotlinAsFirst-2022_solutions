@@ -95,10 +95,11 @@ fun dateStrToDigit(str: String): String {
             "декабря" -> "12"
             else -> "-1"
         }
-
         return if ((line[0].toInt() !in 0..daysInMonth(line[1].toInt(), line[2].toInt()) || (line[1] == "-1"))) ""
         else String.format("%02d.%02d.%d", line[0].toInt(), line[1].toInt(), line[2].toInt())
     } catch (I: IndexOutOfBoundsException) {
+        return ""
+    } catch (E: NumberFormatException) {
         return ""
     }
 }
