@@ -100,7 +100,7 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val names = mutableMapOf<Int, MutableList<String>>()
-    for (i in 2..5) {
+    for (i in 0..5) {
         val namesList = mutableListOf<String>()
         for ((name, grade) in grades) if (grade == i) namesList.add((name))
         if (namesList.isNotEmpty()) names[i] = namesList
