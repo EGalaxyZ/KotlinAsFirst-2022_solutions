@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.kotlin.typeclass.kind
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -96,7 +98,15 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val names = mutableMapOf<Int, MutableList<String>>()
+    for (i in 2..5) {
+        val namesList = mutableListOf<String>()
+        for ((name, grade) in grades) if (grade == i) namesList.add((name))
+        if (namesList.isNotEmpty()) names[i] = namesList
+    }
+    return names
+}
 
 /**
  * Простая (2 балла)
@@ -154,7 +164,14 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    val phonebook = mutableMapOf<String, String>()
+    phonebook.putAll(mapA)
+    for ((name, number) in mapB) if ((name in mapB == name in phonebook) && (phonebook[name] != number)) phonebook[name] =
+        phonebook[name] + ", " + number
+    else phonebook[name] = number
+    return phonebook
+}
 
 /**
  * Средняя (4 балла)
@@ -183,7 +200,16 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    val list = stuff.filter { (_, type) -> type.first == kind }
+    val names = mutableListOf<String>()
+    val prices = mutableListOf<Double>()
+    for ((name, type) in list) {
+        names.add(name)
+        prices.add(type.second)
+    }
+    return if (list.isEmpty()) null else names[prices.indexOf(prices.min())]
+}
 
 /**
  * Средняя (3 балла)
