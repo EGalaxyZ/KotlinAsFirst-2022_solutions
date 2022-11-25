@@ -3,6 +3,7 @@
 package lesson5.task1
 
 import ru.spbstu.kotlin.typeclass.kind
+import ru.spbstu.wheels.sorted
 
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
@@ -167,9 +168,10 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val phonebook = mutableMapOf<String, String>()
     phonebook.putAll(mapA)
-    for ((name, number) in mapB) if ((name in mapB == name in phonebook) && (phonebook[name] != number)) phonebook[name] =
-        phonebook[name] + ", " + number
-    else phonebook[name] = number
+    for ((name, number) in mapB)
+        if ((name in mapB == name in phonebook) && (phonebook[name] != number)) phonebook[name] =
+            phonebook[name] + ", " + number
+        else phonebook[name] = number
     return phonebook
 }
 
@@ -202,13 +204,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     val list = stuff.filter { (_, type) -> type.first == kind }
-    val names = mutableListOf<String>()
-    val prices = mutableListOf<Double>()
-    for ((name, type) in list) {
-        names.add(name)
-        prices.add(type.second)
-    }
-    return if (list.isEmpty()) null else names[prices.indexOf(prices.min())]
+    return list.minByOrNull { it.value.second }?.key
 }
 
 /**
@@ -305,16 +301,11 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val numbers = mutableMapOf<Int, Int>()
-    var answer1 = -1
-    var answer2 = -1
-    for (i in list.indices) numbers[list[i]] = list.indexOf(list[i])
-    for (n in 0..list.size - 2) for (m in n + 1 until list.size) {
-        if (list[n] + list[m] == number) {
-            answer1 = numbers.getOrDefault(list[n], -1)
-            answer2 = numbers.getOrDefault(list[m], -1)
-        }
-    }
-    return answer1 to answer2
+    var answer: Pair<Int, Int> = Pair(-1, -1)
+    for (i in list.indices) numbers[list[i]] = i
+    for (i in numbers.keys) if ((number - i in numbers) && (numbers[number - i] != numbers[i])) answer =
+        Pair(numbers[i] ?: -1, numbers[number - i] ?: -1).sorted()
+    return answer
 }
 
 /**
@@ -338,4 +329,20 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val maybeTreasures = treasures.filter { it.value.first <= capacity }
+    val needed = mutableMapOf<Int, Pair<String, Int>>()
+    for ((key, value) in maybeTreasures) needed[value.first] = Pair(key, value.second)
+    var size = capacity
+    val answer = mutableSetOf<String>()
+    while (size > 0) {
+        if (needed.isEmpty()) break
+        val thing = needed.maxBy { it.value.second }
+        if (size - thing.key >= 0) {
+            answer.add(thing.value.first)
+            size -= thing.key
+        } else break
+        needed.remove(thing.key)
+    }
+    return answer
+}

@@ -256,7 +256,7 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val number = convert(n, base)
-    return number.joinToString(separator = "") { if (it > 9) "${Char(it + 87)}" else "$it" }
+    return number.joinToString(separator = "") { if (it > 9) "${Char(it + 'a'.code - 10)}" else "$it" }
 }
 
 /**
@@ -292,7 +292,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  */
 fun decimalFromString(str: String, base: Int): Int {
     val list = mutableListOf<Int>()
-    for (i in str.indices) if (str[i] >= 'a') list.add(str[i].code - 87) else list.add(str[i].code - 48)
+    for (i in str.indices) if (str[i] >= 'a') list.add(str[i].code - 'a'.code + 10) else list.add(str[i].code - 48)
     return decimal(list, base)
 }
 
