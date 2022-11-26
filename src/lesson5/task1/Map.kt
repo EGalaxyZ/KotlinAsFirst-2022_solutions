@@ -2,9 +2,6 @@
 
 package lesson5.task1
 
-import ru.spbstu.kotlin.typeclass.kind
-import ru.spbstu.wheels.sorted
-
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -300,11 +297,16 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val numbers = mutableMapOf<Int, Int>()
-    var answer: Pair<Int, Int> = Pair(-1, -1)
-    for (i in list.indices) numbers[list[i]] = i
-    for (i in numbers.keys) if ((number - i in numbers) && (numbers[number - i] != numbers[i])) answer =
-        Pair(numbers[i] ?: -1, numbers[number - i] ?: -1).sorted()
+    val numbers = list.toMutableList()
+    var answer = -1 to -1
+    for (i in list.indices) {
+        numbers.remove(list[i])
+        if (number - list[i] in numbers) {
+            answer = i to (numbers.indexOf(number - list[i]) + 1)
+            break
+        }
+        numbers.add(i, list[i])
+    }
     return answer
 }
 
@@ -330,19 +332,17 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val maybeTreasures = treasures.filter { it.value.first <= capacity }
-    val needed = mutableMapOf<Int, Pair<String, Int>>()
-    for ((key, value) in maybeTreasures) needed[value.first] = Pair(key, value.second)
+    val maybeTreasures = treasures.filter { it.value.first <= capacity }.toMutableMap()
     var size = capacity
     val answer = mutableSetOf<String>()
     while (size > 0) {
-        if (needed.isEmpty()) break
-        val thing = needed.maxBy { it.value.second }
-        if (size - thing.key >= 0) {
-            answer.add(thing.value.first)
-            size -= thing.key
+        if (maybeTreasures.isEmpty()) break
+        val thing = maybeTreasures.maxBy { it.value.second }
+        if (size - thing.value.first >= 0) {
+            answer.add(thing.key)
+            size -= thing.value.first
         } else break
-        needed.remove(thing.key)
+        maybeTreasures.remove(thing.key)
     }
     return answer
 }
