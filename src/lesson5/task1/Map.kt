@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.sorted
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -301,13 +303,12 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var answer = -1 to -1
     for (i in list.indices) {
         numbers.remove(list[i])
-        if (number - list[i] in numbers) {
-            answer = i to (numbers.indexOf(number - list[i]) + 1)
+        if ((number - list[i] in list) && (i != list.indexOf(number - list[i]))) {
+            answer = i to list.indexOf(number - list[i])
             break
         }
-        numbers.add(i, list[i])
     }
-    return answer
+    return answer.sorted()
 }
 
 /**
@@ -335,13 +336,13 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val maybeTreasures = treasures.filter { it.value.first <= capacity }.toMutableMap()
     var size = capacity
     val answer = mutableSetOf<String>()
-    while (size > 0) {
-        if (maybeTreasures.isEmpty()) break
+    while (maybeTreasures.isNotEmpty()) {
         val thing = maybeTreasures.maxBy { it.value.second }
         if (size - thing.value.first >= 0) {
             answer.add(thing.key)
             size -= thing.value.first
-        } else break
+        }
+        maybeTreasures.filter { it.value.first <= size }
         maybeTreasures.remove(thing.key)
     }
     return answer
