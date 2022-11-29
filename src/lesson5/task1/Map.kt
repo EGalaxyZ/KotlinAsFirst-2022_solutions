@@ -330,35 +330,4 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val maybeTreasures = treasures.filter { it.value.first <= capacity }
-    var answer = mutableSetOf<String>() // Итоговый ответ
-    var totalPrice = 0 // Сравнение для итогового ответа
-    for ((key, pair) in maybeTreasures) {
-        var value = 0 // Куда будем заносить цену всех помещающихся предметов
-        val nameSet = mutableSetOf<String>() // Имя этих предметов
-        var mapOfTreasures = treasures.filter { it.value.first <= capacity }.toMutableMap()
-        var size = capacity
-        value += pair.second
-        size -= pair.first
-        nameSet.add(key)
-        mapOfTreasures.remove(key)
-        while (mapOfTreasures.isNotEmpty()) {
-            var thing = mapOfTreasures.minBy { it.value.first }
-            val minTreasures = mapOfTreasures.filter { it.value.first == thing.value.first }
-            thing = minTreasures.maxBy { it.value.second }
-            if (size - thing.value.first >= 0) {
-                nameSet.add(thing.key)
-                size -= thing.value.first
-                value += thing.value.second
-            }
-            mapOfTreasures.remove(thing.key)
-            mapOfTreasures = mapOfTreasures.filter { it.value.first <= size }.toMutableMap()
-        }
-        if (value > totalPrice) {
-            answer = nameSet
-            totalPrice = value
-        }
-    }
-    return answer
-}
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
