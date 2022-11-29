@@ -344,7 +344,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         nameSet.add(key)
         mapOfTreasures.remove(key)
         while (mapOfTreasures.isNotEmpty()) {
-            val thing = mapOfTreasures.minBy { it.value.first }
+            var thing = mapOfTreasures.minBy { it.value.first }
+            val minTreasures = mapOfTreasures.filter { it.value.first == thing.value.first }
+            thing = minTreasures.maxBy { it.value.second }
             if (size - thing.value.first >= 0) {
                 nameSet.add(thing.key)
                 size -= thing.value.first
