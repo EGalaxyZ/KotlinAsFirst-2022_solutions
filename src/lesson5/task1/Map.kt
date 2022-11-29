@@ -351,6 +351,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 size -= thing.value.first
                 value += thing.value.second
             }
+            mapOfTreasures.remove(thing.key)
             mapOfTreasures = mapOfTreasures.filter { it.value.first <= size }.toMutableMap()
         }
         if (value > totalPrice) {
