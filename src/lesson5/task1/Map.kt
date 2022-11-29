@@ -299,10 +299,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val numbers = list.toMutableList()
     var answer = -1 to -1
     for (i in list.indices) {
-        numbers.remove(list[i])
         if ((number - list[i] in list) && (i != list.indexOf(number - list[i]))) {
             answer = i to list.indexOf(number - list[i])
             break
@@ -334,16 +332,31 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val maybeTreasures = treasures.filter { it.value.first <= capacity }.toMutableMap()
-    var size = capacity
-    val answer = mutableSetOf<String>()
-    while (maybeTreasures.isNotEmpty()) {
-        val thing = maybeTreasures.maxBy { it.value.second }
-        if (size - thing.value.first >= 0) {
-            answer.add(thing.key)
-            size -= thing.value.first
+    var answer = mutableSetOf<String>() // Итоговый ответ
+    var totalPrice = 0 // Сравнение для итогового ответа
+    for ((key, pair) in maybeTreasures) {
+        var value = 0 // Куда будем заносить цену всех помещающихся предметов
+        val nameSet = mutableSetOf<String>() // Имя этих предметов
+        var mapOfTreasures = treasures.filter { it.value.first <= capacity }.toMutableMap()
+        var size = capacity
+        value += pair.second
+        size -= pair.first
+        nameSet.add(key)
+        mapOfTreasures.remove(key)
+        mapOfTreasures = mapOfTreasures.filter { it.value.first <= size }.toMutableMap()
+        while (mapOfTreasures.isNotEmpty()) {
+            val thing = mapOfTreasures.maxBy { it.value.second }
+            if (size - thing.value.first >= 0) {
+                nameSet.add(thing.key)
+                size -= thing.value.first
+                value += thing.value.second
+            }
+            mapOfTreasures = mapOfTreasures.filter { it.value.first <= size }.toMutableMap()
         }
-        maybeTreasures.filter { it.value.first <= size }
-        maybeTreasures.remove(thing.key)
+        if (value > totalPrice) {
+            answer = nameSet
+            totalPrice = value
+        }
     }
     return answer
 }
