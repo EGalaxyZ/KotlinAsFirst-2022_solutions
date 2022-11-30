@@ -115,7 +115,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val neededString = Regex("""([0123][123456789])\.([01][123456789])\.(\d+)""")
+    val neededString = Regex("""(0[123456789]|[123]\d)\.([01][123456789])\.(\d+)""")
     if (!neededString.matches(digital)) return ""
     val dateList = neededString.find(digital)!!.groupValues.toMutableList()
     if (dateList[1].toInt() !in 0..daysInMonth(dateList[2].toInt(), dateList[3].toInt())) return ""
