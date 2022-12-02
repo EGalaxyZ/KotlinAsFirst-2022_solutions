@@ -77,7 +77,7 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val neededString = Regex("""(\d{1,2})\s([абвгдеиклмнопрстфюя]+)\s(\d+)""")
+    val neededString = Regex("""(\d{1,2})\s([абвгдеиклмнопрстуфюя]+)\s(\d+)""")
     if (!neededString.matches(str)) return ""
     val dateList = neededString.find(str)!!.groupValues.toMutableList()
     dateList[2] = when (dateList[2]) {
