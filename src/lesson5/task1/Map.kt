@@ -100,10 +100,12 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val names = mutableMapOf<Int, MutableList<String>>()
-    for (i in grades.values) {
-        val namesList = mutableListOf<String>()
-        for ((name, grade) in grades) if (grade == i) namesList.add((name))
-        if (namesList.isNotEmpty()) names[i] = namesList
+    for ((name, grade) in grades) {
+        if (names.containsKey(grade)) (names[grade] ?: mutableListOf("")).add(name)
+        else {
+            names[grade] = mutableListOf()
+            (names[grade] ?: mutableListOf("")).add(name)
+        }
     }
     return names
 }
@@ -168,7 +170,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     val phonebook = mutableMapOf<String, String>()
     phonebook.putAll(mapA)
     for ((name, number) in mapB)
-        if ((name in mapB == name in phonebook) && (phonebook[name] != number)) phonebook[name] =
+        if ((name in phonebook) && (phonebook[name] != number)) phonebook[name] =
             phonebook[name] + ", " + number
         else phonebook[name] = number
     return phonebook

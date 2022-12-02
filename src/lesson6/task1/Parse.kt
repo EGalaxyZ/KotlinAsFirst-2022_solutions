@@ -3,7 +3,6 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import java.lang.IndexOutOfBoundsException
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -78,30 +77,30 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val line = str.split(" ").toMutableList()
-    try {
-        line[1] = when (line[1]) {
-            "января" -> "01"
-            "февраля" -> "02"
-            "марта" -> "03"
-            "апреля" -> "04"
-            "мая" -> "05"
-            "июня" -> "06"
-            "июля" -> "07"
-            "августа" -> "08"
-            "сентября" -> "09"
-            "октября" -> "10"
-            "ноября" -> "11"
-            "декабря" -> "12"
-            else -> "-1"
-        }
-        return if ((line[0].toInt() !in 0..daysInMonth(line[1].toInt(), line[2].toInt()) || (line[1] == "-1"))) ""
-        else String.format("%02d.%02d.%d", line[0].toInt(), line[1].toInt(), line[2].toInt())
-    } catch (I: IndexOutOfBoundsException) {
-        return ""
-    } catch (E: NumberFormatException) {
-        return ""
+    val neededString = Regex("""(\d{1,2})\s([абвгдеиклмнопрстюя]+)\s(\d{1,4})""")
+    if (!neededString.matches(str)) return ""
+    val dateList = neededString.find(str)!!.groupValues.toMutableList()
+    dateList[2] = when (dateList[2]) {
+        "января" -> "01"
+        "февраля" -> "02"
+        "марта" -> "03"
+        "апреля" -> "04"
+        "мая" -> "05"
+        "июня" -> "06"
+        "июля" -> "07"
+        "августа" -> "08"
+        "сентября" -> "09"
+        "октября" -> "10"
+        "ноября" -> "11"
+        "декабря" -> "12"
+        else -> "-1"
     }
+    return if ((dateList[1].toInt() !in 0..daysInMonth(
+            dateList[2].toInt(),
+            dateList[3].toInt()
+        ) || (dateList[2] == "-1"))
+    ) ""
+    else String.format("%02d.%s.%s", dateList[1].toInt(), dateList[2], dateList[3])
 }
 
 /**
@@ -119,20 +118,21 @@ fun dateDigitToStr(digital: String): String {
     if (!neededString.matches(digital)) return ""
     val dateList = neededString.find(digital)!!.groupValues.toMutableList()
     if (dateList[1].toInt() !in 0..daysInMonth(dateList[2].toInt(), dateList[3].toInt())) return ""
-    dateList[2] = when (dateList[2]) {
-        "01" -> "января"
-        "02" -> "февраля"
-        "03" -> "марта"
-        "04" -> "апреля"
-        "05" -> "мая"
-        "06" -> "июня"
-        "07" -> "июля"
-        "08" -> "августа"
-        "09" -> "сентября"
-        "10" -> "октября"
-        "11" -> "ноября"
-        else -> "декабря"
-    }
+    val month = listOf(
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    )
+    dateList[2] = month[dateList[2].toInt() - 1]
     return String.format("%d %s %s", dateList[1].toInt(), dateList[2], dateList[3])
 }
 
