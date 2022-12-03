@@ -77,7 +77,7 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val neededString = Regex("""(\d{1,2})\s([абвгдеиклмнопрстуфюя]+)\s(\d+)""")
+    val neededString = Regex("""([123456789]|[123]\d)\s([абвгдеиклмнопрстуфюя]+)\s(\d+)""")
     if (!neededString.matches(str)) return ""
     val dateList = neededString.find(str)!!.groupValues.toMutableList()
     dateList[2] = when (dateList[2]) {
@@ -155,7 +155,7 @@ fun flattenPhoneNumber(phone: String): String {
     val stringException2 = Regex("""\((?!\s*-*\d+)""")
     if (phone.contains(stringException1) || phone.contains(stringException2)) return ""
     val str = phone.split("-", " ", "(", ")")
-    return str.filter { it != "" }.joinToString(separator = "")
+    return if (str.isNotEmpty()) str.filter { it != "" }.joinToString(separator = "") else ""
 }
 
 /**
