@@ -150,7 +150,13 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    val stringException1 = Regex("""[^\d-+()\s]""")
+    val stringException2 = Regex("""\((?!\s*-*\d+)""")
+    if (phone.contains(stringException1) || phone.contains(stringException2)) return ""
+    val str = phone.split("-", " ", "(", ")")
+    return str.filter { it != "" }.joinToString(separator = "")
+}
 
 /**
  * Средняя (5 баллов)
@@ -162,7 +168,12 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val stringException = Regex("""[^\d\s-%]""")
+    if (jumps.contains(stringException) || jumps.isEmpty()) return -1
+    val str = jumps.split("-", " ", "%").filter { it != "" }
+    return if (str.isEmpty()) -1 else str.maxOf { it.toInt() }
+}
 
 /**
  * Сложная (6 баллов)
@@ -175,7 +186,17 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    val stringException1 = Regex("""[^\d\s-%+]""")
+    val stringException2 = Regex("""\+""")
+    if (jumps.contains(stringException1) || !jumps.contains(stringException2)) return -1
+    val results = Regex("""(\d+\s[-%]*\+)""").findAll(jumps)
+    val matches = mutableListOf<String>()
+    for (i in results) matches.add(
+        i.groupValues.drop(1).toString().split("+", "-", "%", " ", "[", "]").joinToString(separator = "")
+    )
+    return matches.maxOf { it.toInt() }
+}
 
 /**
  * Сложная (6 баллов)
