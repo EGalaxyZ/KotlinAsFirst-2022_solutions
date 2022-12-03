@@ -153,9 +153,9 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
     val stringException1 = Regex("""[^\d-+() ]""")
     val stringException2 = Regex("""\((?! *-*\d+)""")
-    if (phone.contains(stringException1) || phone.contains(stringException2) || phone.isEmpty()) return "-1"
+    if (phone.contains(stringException1) || phone.contains(stringException2) || phone.isEmpty()) return ""
     val str = phone.split("-", " ", "(", ")")
-    return str.filter { it != "" }.joinToString(separator = "").ifEmpty { "-1" }
+    return str.filter { it != "" }.joinToString(separator = "").ifEmpty { "" }
 }
 
 /**
