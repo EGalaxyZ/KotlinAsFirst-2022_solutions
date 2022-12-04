@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import java.lang.IllegalArgumentException
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -207,7 +208,19 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val stringExpectedPlus = Regex("""^(\d+)|((?<=\+ )\d+)""")
+    val stringExceptionMinus = Regex("""((?<=- )\d+)""")
+    val stringException = Regex("""(\d+ \d+)|([+-] [+-])|[^ \d+-]|^(\D)""")
+    if (expression.contains(stringException)) throw IllegalArgumentException("Неверный формат строки")
+    val summary = mutableListOf<String>()
+    val minuses = mutableListOf<String>()
+    for (i in stringExpectedPlus.findAll(expression))
+        summary.add(i.groupValues.drop(1).joinToString(separator = ""))
+    for (i in stringExceptionMinus.findAll(expression))
+        minuses.add(i.groupValues.drop(1).joinToString(separator = ""))
+    return summary.sumOf { it.toInt() } - minuses.sumOf { it.toInt() }
+}
 
 /**
  * Сложная (6 баллов)
@@ -218,7 +231,8 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int =
+    Regex("""([а-яА-я]+) *\1""", RegexOption.IGNORE_CASE).find(str)?.range?.first ?: -1
 
 /**
  * Сложная (6 баллов)
@@ -231,7 +245,20 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val stringNotExpected = Regex("""\d+\.*\d?[; ]?[а-яА-Я]+|[а-яА-Я]+\d+\.*\d?""")
+    val stringException = Regex("""[^а-яА-я ;.\d]""")
+    if (description.contains(stringException) || description.contains(stringNotExpected) || description.isEmpty()) return ""
+    val numbers = mutableListOf<String>()
+    val names = mutableListOf<String>()
+    for (i in Regex("""(\d+\.*\d?)""").findAll(description)) numbers.add(
+        i.groupValues.drop(1).joinToString(separator = "")
+    )
+    for (i in Regex("""([а-яА-Я]+)""").findAll(description)) names.add(
+        i.groupValues.drop(1).joinToString(separator = "")
+    )
+    return names[numbers.indexOf(numbers.maxBy { it.toDouble() })]
+}
 
 /**
  * Сложная (6 баллов)
