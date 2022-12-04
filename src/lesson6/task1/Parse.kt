@@ -233,7 +233,7 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int =
-    Regex("""([а-яА-яa-zA-Z]+) \1""", RegexOption.IGNORE_CASE).find(str)?.range?.first ?: -1
+    Regex("""([а-яА-Я\w]+) \1""", RegexOption.IGNORE_CASE).find(str)?.range?.first ?: -1
 
 /**
  * Сложная (6 баллов)
@@ -247,7 +247,7 @@ fun firstDuplicateIndex(str: String): Int =
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    val stringNotExpected = Regex("""\d+\.*\d?[; ]?[а-яА-Яa-zA-Z]+|[а-яА-Яa-zA-Z]+\d+\.*\d?""")
+    val stringNotExpected = Regex("""\d+\.*\d?[; ]?[а-яА-Яa-zA-Z]+|[а-яА-Яa-zA-Z]+\d+\.*\d*""")
     val stringException = Regex("""[^а-яА-яa-zA-Z ;.\d]""")
     if (description.contains(stringException) || description.contains(stringNotExpected) || description.isEmpty())
         return ""
