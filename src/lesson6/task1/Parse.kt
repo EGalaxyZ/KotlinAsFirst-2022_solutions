@@ -233,7 +233,7 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int =
-    Regex("""([а-яА-яa-zA-Z]+) *\1""", RegexOption.IGNORE_CASE).find(str)?.range?.first ?: -1
+    Regex("""(\w+) *\1""", RegexOption.IGNORE_CASE).find(str)?.range?.first ?: -1
 
 /**
  * Сложная (6 баллов)
@@ -250,7 +250,7 @@ fun mostExpensive(description: String): String {
     val stringNotExpected = Regex("""\d+\.*\d?[; ]?[а-яА-Яa-zA-Z]+|[а-яА-Яa-zA-Z]+\d+\.*\d?""")
     val stringException = Regex("""[^а-яА-яa-zA-Z ;.\d]""")
     if (description.contains(stringException) || description.contains(stringNotExpected) || description.isEmpty())
-        return "Any good with price 0.0"
+        return ""
     val numbers = mutableListOf<String>()
     val names = mutableListOf<String>()
     for (i in Regex("""(\d+\.*\d?)""").findAll(description)) numbers.add(
@@ -259,7 +259,8 @@ fun mostExpensive(description: String): String {
     for (i in Regex("""([а-яА-Яa-zA-Z]+)""").findAll(description)) names.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
-    return names[numbers.indexOf(numbers.maxBy { it.toDouble() })]
+    return if (numbers.sumOf { it.toDouble() } != 0.0) names[numbers.indexOf(numbers.maxBy { it.toDouble() })]
+    else "Any good with price ${numbers[0]}"
 }
 
 /**
