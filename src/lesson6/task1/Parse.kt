@@ -233,7 +233,7 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int =
-    Regex("""(\w+) *\1""", RegexOption.IGNORE_CASE).find(str)?.range?.first ?: -1
+    Regex("""([а-яА-яa-zA-Z]+) \1""", RegexOption.IGNORE_CASE).find(str)?.range?.first ?: -1
 
 /**
  * Сложная (6 баллов)
@@ -259,8 +259,7 @@ fun mostExpensive(description: String): String {
     for (i in Regex("""([а-яА-Яa-zA-Z]+)""").findAll(description)) names.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
-    return if (numbers.sumOf { it.toDouble() } != 0.0) names[numbers.indexOf(numbers.maxBy { it.toDouble() })]
-    else "Any good with price ${numbers[0]}"
+    return names[numbers.indexOf(numbers.maxBy { it.toDouble() })]
 }
 
 /**
