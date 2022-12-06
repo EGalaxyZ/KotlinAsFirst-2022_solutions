@@ -248,15 +248,14 @@ fun firstDuplicateIndex(str: String): Int =
  */
 fun mostExpensive(description: String): String {
     val stringNotExpected = Regex("""\d+\.*\d*[; ]?[а-яА-Яa-zA-Z]+|[а-яА-Яa-zA-Z]+\d+\.*\d*""")
-    val stringException = Regex("""[^а-яА-яa-zA-Z ;.\d]""")
-    if (description.contains(stringException) || description.contains(stringNotExpected) || description.isEmpty())
+if(description.contains(stringNotExpected) || description.isEmpty())
         return ""
     val numbers = mutableListOf<String>()
     val names = mutableListOf<String>()
     for (i in Regex("""(\d+\.*\d*)""").findAll(description)) numbers.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
-    for (i in Regex("""([а-яА-Яa-zA-Z].+)(?= \d)""").findAll(description)) names.add(
+    for (i in Regex("""([\S]+)(?= \d)""").findAll(description)) names.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
     return names[numbers.indexOf(numbers.maxBy { it.toDouble() })]
