@@ -247,19 +247,24 @@ fun firstDuplicateIndex(str: String): Int =
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    val stringNotExpected = Regex("""\d+\.*\d*[; ]?[а-яА-Яa-zA-Z]+|[а-яА-Яa-zA-Z]+\d+\.*\d*""")
-if(description.contains(stringNotExpected) || description.isEmpty())
-        return ""
+    val stringNotExpected = Regex("""\d+\.*\d* ;""")
+    if (description.contains(stringNotExpected) || description.isEmpty())
+        return "-1"
     val numbers = mutableListOf<String>()
     val names = mutableListOf<String>()
-    for (i in Regex("""(\d+\.*\d*)""").findAll(description)) numbers.add(
+    for (i in Regex("""; \S+ (\d+\.*\d?)|\S+ (\d+\.*\d?)""").findAll(description)) numbers.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
-    for (i in Regex("""([\S]+)(?= \d)""").findAll(description)) names.add(
-        i.groupValues.drop(1).joinToString(separator = "")
+    val name = description.split(";")
+    println(name)
+    println(numbers)
+    for (i in name) names.add(
+        Regex("""(\S+)(?= \d)""").find(i)!!.groupValues.drop(1).joinToString(separator = "")
     )
-    return names[numbers.indexOf(numbers.maxBy { it.toDouble() })]
+    println(names)
+    return names[numbers.indexOf(numbers.maxBy { it.toDouble() })].trim()
 }
+
 
 /**
  * Сложная (6 баллов)
