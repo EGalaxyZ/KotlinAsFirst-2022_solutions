@@ -252,7 +252,7 @@ fun mostExpensive(description: String): String {
         return ""
     val numbers = mutableListOf<String>()
     val names = mutableListOf<String>()
-    for (i in Regex("""; \S+ (\d+\.*\d+)|^\S+ (\d+\.*\d+)""").findAll(description)) numbers.add(
+    for (i in Regex("""; \S+ (\d+\.*\d*)|^\S+ (\d+\.*\d*)""").findAll(description)) numbers.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
     val name = description.split(";")
