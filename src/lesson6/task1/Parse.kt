@@ -258,7 +258,8 @@ fun mostExpensive(description: String): String {
     val name = description.split(";")
     println(name)
     println(numbers)
-    for (i in name) names.add(Regex("""(\S+)(?= \d)""").find(i)!!.groupValues.drop(1).joinToString(separator = "")
+    for (i in name) names.add(
+        Regex("""(\S+)(?= \d)""").find(i)!!.groupValues.drop(1).joinToString(separator = "")
     )
     println(names)
     return names[numbers.indexOf(numbers.maxBy { it.toDouble() })].trim()
