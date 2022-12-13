@@ -115,7 +115,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val neededString = Regex("""(0[123456789]|[123]\d)\.(0[123456789]|1[012])\.(\d+)""")
+    val neededString = Regex("""(0[1-9]|[123]\d)\.(0[1-9]|1[012])\.(\d+)""")
     if (!neededString.matches(digital)) return ""
     val dateList = neededString.find(digital)!!.groupValues.toMutableList()
     if (dateList[1].toInt() !in 1..daysInMonth(dateList[2].toInt(), dateList[3].toInt())) return ""
@@ -257,8 +257,8 @@ fun mostExpensive(description: String): String {
     for (i in Regex("""; \S+ (\d+[.\d]*)|^\S+ (\d+[.\d]*)""").findAll(description)) numbers.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
-    val name = description.split(";")
-    for (i in name) names.add(
+    val lines = description.split(";")
+    for (i in lines) names.add(
         Regex("""(\S+)(?= \d)""").find(i)!!.groupValues.drop(1).joinToString(separator = "")
     )
     return names[numbers.indexOf(numbers.maxBy { it.toDouble() })].trim()

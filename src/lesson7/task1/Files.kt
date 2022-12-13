@@ -145,7 +145,20 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var neededLength = 0
+    File(inputName).forEachLine { if (it.length > neededLength) neededLength = it.trim().length }
+    File(outputName).bufferedWriter().use { answer ->
+        File(inputName).useLines { lines ->
+            for (line in lines) {
+                val strLength = line.trim().length
+                var dataString = line.trim()
+                val left = (neededLength - strLength) / 2
+                for (i in 1..left) dataString = " $dataString"
+                answer.write(dataString)
+                answer.newLine()
+            }
+        }
+    }
 }
 
 /**
