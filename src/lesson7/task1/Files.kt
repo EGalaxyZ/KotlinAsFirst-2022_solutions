@@ -176,7 +176,34 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    var neededLength = 0
+    File(inputName).forEachLine { if (it.length > neededLength) neededLength = it.trim().length }
+    File(outputName).bufferedWriter().use { answer ->
+        File(inputName).forEachLine { line ->
+            if (line.trim().isEmpty() || line.trim().matches(Regex("""[\wа-яА-Я]+"""))) {
+                answer.write(line.trim())
+                answer.newLine()
+            } else {
+                val dataString = line.split(" ").map { it.trim() }.filter { it != "" }.toMutableList()
+                dataString[0] = dataString[0].trim()
+                val currentLenght = dataString.joinToString("").length
+                val neededSpace = (neededLength - currentLenght) / (dataString.size - 1)
+                var lastSpace = (neededLength - currentLenght) % (dataString.size - 1)
+                for (i in dataString.indices) {
+                    if (lastSpace > 0) {
+                        dataString[i] = dataString[i] + " "
+                        lastSpace--
+                    }
+                    for (j in 1..neededSpace) {
+                        dataString[i] = dataString[i] + " "
+                    }
+                }
+                dataString[dataString.lastIndex] = dataString[dataString.lastIndex].trim()
+                answer.write(dataString.joinToString(""))
+                answer.newLine()
+            }
+        }
+    }
 }
 
 /**
