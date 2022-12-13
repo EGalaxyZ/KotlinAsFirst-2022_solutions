@@ -180,7 +180,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     File(inputName).forEachLine { if (it.length > neededLength) neededLength = it.trim().length }
     File(outputName).bufferedWriter().use { answer ->
         File(inputName).forEachLine { line ->
-            if (line.trim().isEmpty() || line.trim().matches(Regex("""[\wа-яА-Я]+"""))) {
+            if (line.trim().isEmpty() || line.trim().matches(Regex("""\S+"""))) {
                 answer.write(line.trim())
                 answer.newLine()
             } else {
