@@ -96,11 +96,7 @@ fun dateStrToDigit(str: String): String {
         "декабря" -> "12"
         else -> "-1"
     }
-    return if ((dateList[1].toInt() !in 1..daysInMonth(
-            dateList[2].toInt(),
-            dateList[3].toInt()
-        ) || (dateList[2] == "-1"))
-    ) ""
+    return if (checkIn(dateList) || (dateList[2] == "-1")) ""
     else String.format("%02d.%s.%s", dateList[1].toInt(), dateList[2], dateList[3])
 }
 
@@ -118,7 +114,7 @@ fun dateDigitToStr(digital: String): String {
     val neededString = Regex("""(0[1-9]|[123]\d)\.(0[1-9]|1[012])\.(\d+)""")
     if (!neededString.matches(digital)) return ""
     val dateList = neededString.find(digital)!!.groupValues.toMutableList()
-    if (dateList[1].toInt() !in 1..daysInMonth(dateList[2].toInt(), dateList[3].toInt())) return ""
+    if (checkIn(dateList)) return ""
     val month = listOf(
         "января",
         "февраля",
@@ -135,6 +131,11 @@ fun dateDigitToStr(digital: String): String {
     )
     dateList[2] = month[dateList[2].toInt() - 1]
     return String.format("%d %s %s", dateList[1].toInt(), dateList[2], dateList[3])
+}
+
+private fun checkIn(dateList: MutableList<String>): Boolean {
+    if (dateList[1].toInt() !in 1..daysInMonth(dateList[2].toInt(), dateList[3].toInt())) return true
+    return false
 }
 
 /**
