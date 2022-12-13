@@ -101,10 +101,10 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val names = mutableMapOf<Int, MutableList<String>>()
     for ((name, grade) in grades) {
-        if (names.containsKey(grade)) (names[grade] ?: mutableListOf("")).add(name)
+        if (names.containsKey(grade)) names[grade]!!.add(name)
         else {
             names[grade] = mutableListOf()
-            (names[grade] ?: mutableListOf("")).add(name)
+            names[grade]!!.add(name)
         }
     }
     return names
@@ -154,17 +154,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяющихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val names = mutableListOf<String>()
-    val secondList = b.toMutableList()
-    for (i in a) {
-        if (i in secondList) {
-            names.add(i)
-            secondList.removeAll { it == i }
-        }
-    }
-    return names
-}
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
 
 /**
  * Средняя (3 балла)

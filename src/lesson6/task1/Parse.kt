@@ -96,7 +96,7 @@ fun dateStrToDigit(str: String): String {
         "декабря" -> "12"
         else -> "-1"
     }
-    return if ((dateList[1].toInt() !in 0..daysInMonth(
+    return if ((dateList[1].toInt() !in 1..daysInMonth(
             dateList[2].toInt(),
             dateList[3].toInt()
         ) || (dateList[2] == "-1"))
@@ -118,7 +118,7 @@ fun dateDigitToStr(digital: String): String {
     val neededString = Regex("""(0[123456789]|[123]\d)\.(0[123456789]|1[012])\.(\d+)""")
     if (!neededString.matches(digital)) return ""
     val dateList = neededString.find(digital)!!.groupValues.toMutableList()
-    if (dateList[1].toInt() !in 0..daysInMonth(dateList[2].toInt(), dateList[3].toInt())) return ""
+    if (dateList[1].toInt() !in 1..daysInMonth(dateList[2].toInt(), dateList[3].toInt())) return ""
     val month = listOf(
         "января",
         "февраля",
@@ -170,8 +170,8 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val stringException = Regex("""[^\d\s-%]""")
-    if (jumps.contains(stringException) || jumps.isEmpty()) return -1
+    val stringException = Regex("""[\d-%] [\d-%]""")
+    if (!jumps.contains(stringException) || jumps.isEmpty()) return -1
     val str = jumps.split("-", " ", "%").filter { it != "" }
     return if (str.isEmpty()) -1 else str.maxOf { it.toInt() }
 }
@@ -188,13 +188,14 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
+    val stringExpected = Regex("""^(\d+ [+\-%]+)$|^(\d+ [+\-%]+) (\d+ [+\-%]+ )*(\d+ [+\-%]+)$""")
     val stringException1 = Regex("""[^\d\s-%+]""")
     val stringException2 = Regex("""\+""")
-    if (jumps.contains(stringException1) || !jumps.contains(stringException2)) return -1
+    if (!jumps.contains(stringExpected) || jumps.contains(stringException1) || !jumps.contains(stringException2)) return -1
     val results = Regex("""(\d+\s[-%]*\+)""").findAll(jumps)
     val matches = mutableListOf<String>()
     for (i in results) matches.add(
-        i.groupValues.drop(1).toString().split("+", "-", "%", " ", "[", "]").joinToString(separator = "")
+        i.groupValues.drop(1).joinToString("").split("+", "-", "%", " ").joinToString("")
     )
     return matches.maxOf { it.toInt() }
 }
@@ -210,15 +211,15 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val stringExpectedPlus = Regex("""^(\d+)|((?<=\+ )\d+)""")
-    val stringExceptionMinus = Regex("""((?<=- )\d+)""")
-    val stringException = Regex("""(\d+ \d+)|([+-] [+-])|[^ \d+-]|^(\D)""")
+    val stringExpectedMinus = Regex("""((?<=- )\d+)""")
+    val stringException = Regex("""(\d+ \d+)|([+-] [+-])|[^ \d+-]|^(\D)|(\d+[+-])|([+-]\d+)""")
     if (expression.contains(stringException) || expression.isEmpty())
         throw IllegalArgumentException("Неверный формат строки")
     val summary = mutableListOf<String>()
     val minuses = mutableListOf<String>()
     for (i in stringExpectedPlus.findAll(expression))
         summary.add(i.groupValues.drop(1).joinToString(separator = ""))
-    for (i in stringExceptionMinus.findAll(expression))
+    for (i in stringExpectedMinus.findAll(expression))
         minuses.add(i.groupValues.drop(1).joinToString(separator = ""))
     return summary.sumOf { it.toInt() } - minuses.sumOf { it.toInt() }
 }
@@ -247,21 +248,19 @@ fun firstDuplicateIndex(str: String): Int =
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    val stringNotExpected = Regex("""\d+\.*\d* ;""")
-    if (description.contains(stringNotExpected) || description.isEmpty())
+    val stringExpected =
+        Regex("""^(\S+ \d+(\.\d+)*)$|^(\S+ \d+(\.\d+)*);( \S+ \d+(\.\d+)*;)*( \S+ \d+(\.\d+)*)$""")
+    if (!description.contains(stringExpected) || description.isEmpty())
         return ""
     val numbers = mutableListOf<String>()
     val names = mutableListOf<String>()
-    for (i in Regex("""; \S+ (\d+\.*\d*)|^\S+ (\d+\.*\d*)""").findAll(description)) numbers.add(
+    for (i in Regex("""; \S+ (\d+[.\d]*)|^\S+ (\d+[.\d]*)""").findAll(description)) numbers.add(
         i.groupValues.drop(1).joinToString(separator = "")
     )
     val name = description.split(";")
-    println(name)
-    println(numbers)
     for (i in name) names.add(
         Regex("""(\S+)(?= \d)""").find(i)!!.groupValues.drop(1).joinToString(separator = "")
     )
-    println(names)
     return names[numbers.indexOf(numbers.maxBy { it.toDouble() })].trim()
 }
 
