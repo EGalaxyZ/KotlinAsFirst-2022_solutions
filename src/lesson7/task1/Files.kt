@@ -151,11 +151,11 @@ fun centerFile(inputName: String, outputName: String) {
         File(inputName).useLines { lines ->
             for (line in lines) {
                 val strLength = line.trim().length
-                var dataString = line.trim()
-                val left = (neededLength - strLength) / 2
-                for (i in 1..left) dataString = " $dataString"
-                answer.write(dataString)
-                answer.newLine()
+                val dataString = buildString {
+                    val left = (neededLength - strLength) / 2
+                    append(" ".repeat(left) + line.trim())
+                }
+                answer.appendLine(dataString)
             }
         }
     }
@@ -194,11 +194,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use { answer ->
         File(inputName).forEachLine { line ->
             if (line.trim().isEmpty() || line.trim().matches(Regex("""\S+"""))) {
-                answer.write(line.trim())
-                answer.newLine()
+                answer.appendLine(line.trim())
             } else {
                 val dataString = line.split(" ").map { it.trim() }.filter { it != "" }.toMutableList()
-                dataString[0] = dataString[0].trim()
                 val currentLenght = dataString.joinToString("").length
                 val neededSpace = (neededLength - currentLenght) / (dataString.size - 1)
                 var lastSpace = (neededLength - currentLenght) % (dataString.size - 1)
@@ -207,12 +205,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
                         dataString[i] = dataString[i] + " "
                         lastSpace--
                     }
-                    for (j in 1..neededSpace) {
-                        dataString[i] = dataString[i] + " "
-                    }
+                    dataString[i] = dataString[i] + " ".repeat(neededSpace)
                 }
-                dataString[dataString.lastIndex] = dataString[dataString.lastIndex].trim()
-                answer.write(dataString.joinToString(""))
+                answer.write(dataString.joinToString("").trim())
                 answer.newLine()
             }
         }
