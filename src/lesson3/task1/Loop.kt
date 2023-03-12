@@ -283,9 +283,8 @@ fun squareSequenceDigit(n: Int): Int {
     var k = 1
     var number = 0
     while (count < n) {
-        val numberK = k * k
-        count += digitNumber(numberK)
         number = k * k
+        count += digitNumber(number)
         k++
     }
     return scissors(count, n, number)
