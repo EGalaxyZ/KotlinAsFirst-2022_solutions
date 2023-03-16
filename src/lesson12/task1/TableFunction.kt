@@ -46,11 +46,11 @@ class TableFunction {
      * Если существует две ближайшие пары, вернуть пару с меньшим значением x.
      * Если таблица пуста, бросить IllegalStateException.
      */
-    fun findPair(x: Double): Pair<Double, Double>? =
-        if (list[x] != null) Pair(x, list[x]!!) else if (list.isNotEmpty()) Pair(
-            list.lowerKey(x),
-            list[list.lowerKey(x)]!!
-        ) else throw IllegalStateException()
+    fun findPair(x: Double): Pair<Double, Double>? = when {
+        list[x] != null -> Pair(x, list[x]!!)
+        list.isNotEmpty() -> Pair(list.lowerKey(x), list[list.lowerKey(x)]!!)
+        else -> throw IllegalStateException()
+    }
 
     /**
      * Вернуть значение y по заданному x.
@@ -62,25 +62,22 @@ class TableFunction {
      */
     fun getValue(x: Double): Double {
         if (list.size == 1) return list.values.first()
-        else if (list.isEmpty()) throw IllegalStateException()
-        else if (list[x] != null) return list[x]!!
-        else if (list.higherKey(x) == null && list.lowerKey(x) != null) return list[list.lowerKey(list.lowerKey(x))]!! + (list[list.lowerKey(
-            x
-        )]!! - list[list.lowerKey(list.lowerKey(x))]!!) / (list.lowerKey(
-            x
-        ) - list.lowerKey(
-            list.lowerKey(x)
-        )) * (x - list.lowerKey(list.lowerKey(x)))
-        else if (list.lowerKey(x) == null && list.higherKey(x) != null) return list[list.higherKey(x)]!! + (list[list.higherKey(
-            list.higherKey(x)
-        )]!! - list[list.higherKey(x)]!!) / (list.higherKey(
-            list.higherKey(x)
-        ) - list.higherKey(x)) * (x - list.higherKey(x))
-        else return list[list.lowerKey(x)]!! + (list[list.higherKey(x)]!! - list[list.lowerKey(x)]!!) * (x - list.lowerKey(
-            x
-        )) / (list.higherKey(x) - list.lowerKey(
-            x
-        ))
+        if (list.isEmpty()) throw IllegalStateException()
+        if (list[x] != null) return list[x]!!
+        if (list.higherKey(x) == null && list.lowerKey(x) != null) {
+            val x1 = list.lowerKey(x)
+            val x2 = list.lowerKey(x1)
+            return list[x2]!! + (list[x1]!! - list[x2]!!) / (x1 - x2) * (x - x2)
+        }
+        if (list.lowerKey(x) == null && list.higherKey(x) != null) {
+            val x1 = list.higherKey(x)
+            val x2 = list.higherKey(x1)
+            return list[x1]!! + (list[x2]!! - list[x1]!!) / (x2 - x1) * (x - x1)
+        } else {
+            val x1 = list.lowerKey(x)
+            val x2 = list.higherKey(x)
+            return list[x1]!! + (list[x2]!! - list[x1]!!) * (x - x1) / (x2 - x1)
+        }
     }
 
     /**
