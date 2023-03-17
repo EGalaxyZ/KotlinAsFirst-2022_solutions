@@ -64,20 +64,16 @@ class TableFunction {
         if (list.size == 1) return list.values.first()
         if (list.isEmpty()) throw IllegalStateException()
         if (list[x] != null) return list[x]!!
-        if (list.higherKey(x) == null && list.lowerKey(x) != null) {
-            val x1 = list.lowerKey(x)
-            val x2 = list.lowerKey(x1)
-            return list[x2]!! + (list[x1]!! - list[x2]!!) / (x1 - x2) * (x - x2)
+        val hx = list.higherKey(x)
+        val lx = list.lowerKey(x)
+        if (hx == null && lx != null) {
+            val x2 = list.lowerKey(lx)
+            return list[x2]!! + (list[lx]!! - list[x2]!!) / (lx - x2) * (x - x2)
         }
-        if (list.lowerKey(x) == null && list.higherKey(x) != null) {
-            val x1 = list.higherKey(x)
-            val x2 = list.higherKey(x1)
-            return list[x1]!! + (list[x2]!! - list[x1]!!) / (x2 - x1) * (x - x1)
-        } else {
-            val x1 = list.lowerKey(x)
-            val x2 = list.higherKey(x)
-            return list[x1]!! + (list[x2]!! - list[x1]!!) * (x - x1) / (x2 - x1)
-        }
+        if (lx == null && hx != null) {
+            val x2 = list.higherKey(hx)
+            return list[hx]!! + (list[x2]!! - list[hx]!!) / (x2 - hx) * (x - hx)
+        } else return list[lx]!! + (list[hx]!! - list[lx]!!) * (x - lx) / (hx - lx)
     }
 
     /**
